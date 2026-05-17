@@ -1,0 +1,44 @@
+{
+  "name": "@naka93-gh/csv",
+  "version": "0.1.0",
+  "description": "依存ゼロ・型安全なCSVパーサー（ブラウザ向け）",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "csv",
+    "parser",
+    "browser",
+    "typescript",
+    "zero-dependency"
+  ],
+  "author": "naka93-gh",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "happy-dom": "^15.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
