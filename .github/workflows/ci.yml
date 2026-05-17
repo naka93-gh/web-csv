@@ -14,11 +14,9 @@ jobs:
       # リポジトリのチェックアウト
       - uses: actions/checkout@v4
 
-      # pnpm をインストール（version は package.json の packageManager と合わせる）
+      # pnpm をインストール（バージョンは package.json の packageManager から自動取得）
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       # Node.js セットアップ。pnpm キャッシュも有効化
       - name: Setup Node.js
