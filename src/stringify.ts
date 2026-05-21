@@ -34,8 +34,12 @@ export function stringify<T>(rows: readonly T[], options: StringifyOptions<T> = 
   // 出力対象のキーを抽出
   // 指定キーのヘッダー・ボディで書き出す
   // keyof T & string で絞っているため、k は常に string 型として扱える
+  // headers 未指定時は最初の非 null/undefined 要素のキーを採用する
+  const firstRow = rows.find((r): r is NonNullable<T> => r != null)
+  // headers 未指定かつ全行が null/undefined の場合は列を決められないため BOM のみ返す
+  if (!explicitHeaders && firstRow === undefined) return prefix
   const keys: readonly (keyof T & string)[] =
-    explicitHeaders ?? (Object.keys(rows[0] as object) as (keyof T & string)[])
+    explicitHeaders ?? (Object.keys(firstRow as object) as (keyof T & string)[])
 
   // ヘッダー行の生成
   // 第2引数 false: ヘッダー名は開発者が指定するラベル（業務用語）なので、
@@ -44,14 +48,16 @@ export function stringify<T>(rows: readonly T[], options: StringifyOptions<T> = 
   const headerLine = headerLabelsRow.map((v) => escapeField(v, false)).join(',')
 
   // ボディ行の生成
-  const bodyLines = rows.map((row) =>
-    keys
+  // null/undefined の行は全フィールドを空にした空行として出力する（行数を維持）
+  const bodyLines = rows.map((row) => {
+    if (row == null) return keys.map(() => '').join(',')
+    return keys
       .map((k) => {
         const raw = (row as Record<string, unknown>)[k]
         return escapeField(stringifyValue(raw), sanitizeFormula && typeof raw === 'string')
       })
-      .join(','),
-  )
+      .join(',')
+  })
 
   // 連結してCSV文字列として構築
   return prefix + [headerLine, ...bodyLines].join(newline)

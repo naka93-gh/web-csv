@@ -107,6 +107,37 @@ describe('stringify', () => {
     })
   })
 
+  // 配列要素に null/undefined が混入しても例外を投げず、空行として出力することを担保
+  // （API レスポンスの欠損などで起こりうる。行数を維持して外部システムとの突合を壊さない）
+  // 型上 null は入らないが実行時混入を想定したテストのため null as never で要素に混ぜる
+  describe('null / undefined 行の扱い', () => {
+    it('null 行を全フィールド空の空行として出力する', () => {
+      const rows: { a: number }[] = [{ a: 1 }, null as never, { a: 3 }]
+      expect(stringify(rows, { bom: false })).toBe('a\r\n1\r\n\r\n3')
+    })
+
+    it('undefined 行を全フィールド空の空行として出力する', () => {
+      const rows: { a: number; b: number }[] = [{ a: 1, b: 2 }, undefined as never]
+      expect(stringify(rows, { bom: false })).toBe('a,b\r\n1,2\r\n,')
+    })
+
+    it('先頭が null でも後続の非 null 行からキーを抽出する', () => {
+      const rows: { a: number; b: number }[] = [null as never, { a: 1, b: 2 }]
+      expect(stringify(rows, { bom: false })).toBe('a,b\r\n,\r\n1,2')
+    })
+
+    it('headers 指定時は null 行も指定キー数ぶんの空フィールドで出力する', () => {
+      const rows: { a: number; b: number }[] = [null as never]
+      expect(stringify(rows, { bom: false, headers: ['a', 'b'] })).toBe('a,b\r\n,')
+    })
+
+    it('headers 未指定で全行が null の場合は BOM のみ返す（列を決められないため）', () => {
+      const rows: { a: number }[] = [null as never, undefined as never]
+      expect(stringify(rows)).toBe('﻿')
+      expect(stringify(rows, { bom: false })).toBe('')
+    })
+  })
+
   // Excelで開いたときに数式実行されるリスクを防ぐサニタイズ（デフォルトON）を担保
   describe('CSV インジェクション対策', () => {
     it('= で始まる文字列の先頭にシングルクォートを付ける（デフォルト true）', () => {
