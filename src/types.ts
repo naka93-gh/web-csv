@@ -29,9 +29,9 @@ export type ParsedRow<T> = { [K in keyof T]: string }
  * パースオプション設定
  */
 export type ParseOptions = {
-  /** 1行目をヘッダーとして使うか（デフォルト true） */
+  /** 1行目をヘッダーとして使うか（デフォルト true。headers 指定かつ header 省略時は false 扱い） */
   header?: boolean
-  /** ヘッダーを明示指定（header: false 時に有効） */
+  /** ヘッダーを明示指定。header を省略するとこのキーが使われる（header: false 相当） */
   headers?: readonly string[]
   /** 空行をスキップするか（デフォルト true） */
   skipEmptyLines?: boolean

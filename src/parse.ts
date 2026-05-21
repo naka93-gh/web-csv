@@ -20,7 +20,9 @@ export function parse<T extends object = Record<string, string>>(
   text: string,
   options: ParseOptions = {},
 ): Result<ParsedRow<T>[]> {
-  const { header = true, headers: explicitHeaders, skipEmptyLines = true } = options
+  const { headers: explicitHeaders, skipEmptyLines = true } = options
+  // header 未指定かつ headers 指定時は header:false 扱いとする（headers を使う意図を汲む）
+  const header = options.header ?? explicitHeaders === undefined
 
   // BOM除去
   // 文字が含まれていなければ処理終了

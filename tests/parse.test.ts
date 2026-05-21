@@ -214,6 +214,24 @@ describe('parse', () => {
           { column0: '3', column1: '4' },
         ])
     })
+
+    it('header 未指定で headers を渡すと header:false 扱いになる', () => {
+      // headers を渡した意図（そのキーを使いたい）を汲み、1行目をデータとして扱う
+      const result = parse('1,2\n3,4', { headers: ['a', 'b'] })
+      expect(result.ok).toBe(true)
+      if (result.ok)
+        expect(result.data).toEqual([
+          { a: '1', b: '2' },
+          { a: '3', b: '4' },
+        ])
+    })
+
+    it('header: true を明示した場合は headers を無視する', () => {
+      // 明示的な header:true は従来通り 1行目をヘッダーとし headers は無視
+      const result = parse('x,y\n1,2', { header: true, headers: ['a', 'b'] })
+      expect(result.ok).toBe(true)
+      if (result.ok) expect(result.data).toEqual([{ x: '1', y: '2' }])
+    })
   })
 
   // 不正CSVを例外ではなく Result.error として返す設計を担保
