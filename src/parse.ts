@@ -201,9 +201,12 @@ function parseRawRows(text: string): Result<string[][]> {
   }
 
   // 末尾に残ったフィールドと行を確定
-  // （改行で終わるCSVの場合は currentField='' の空フィールドが1つ積まれる）
-  currentRow.push(currentField)
-  rows.push(currentRow)
+  // テキストが改行で終わる場合は currentRow/currentField が空のままなので、
+  // 幻の空行を生まないようスキップする（skipEmptyLines: false でも漏らさない）
+  if (currentField !== '' || currentRow.length > 0) {
+    currentRow.push(currentField)
+    rows.push(currentRow)
+  }
 
   return { ok: true, data: rows }
 }

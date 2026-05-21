@@ -152,6 +152,20 @@ describe('parse', () => {
       if (result.ok) expect(result.data.length).toBe(3)
     })
 
+    it('skipEmptyLines: false でも末尾改行(LF)は空行を生まない', () => {
+      // 末尾改行はファイル終端の慣習でありデータ行ではない。
+      // skipEmptyLines: false でも幻の空行を生まないことを担保
+      const result = parse('a,b\n1,2\n', { skipEmptyLines: false })
+      expect(result.ok).toBe(true)
+      if (result.ok) expect(result.data).toEqual([{ a: '1', b: '2' }])
+    })
+
+    it('skipEmptyLines: false でも末尾改行(CRLF)は空行を生まない', () => {
+      const result = parse('a,b\r\n1,2\r\n', { skipEmptyLines: false })
+      expect(result.ok).toBe(true)
+      if (result.ok) expect(result.data).toEqual([{ a: '1', b: '2' }])
+    })
+
     it('全行が空行のCSV（改行のみ）は空配列を返す', () => {
       // フィルタ後に行が0件になるケースの早期return分岐を担保
       const result = parse('\n')
