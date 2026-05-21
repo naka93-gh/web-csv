@@ -91,15 +91,17 @@ export function downloadCSV<T>(
   const a = document.createElement('a')
   a.href = url
   a.download = filename
-  document.body.appendChild(a)
 
-  // クリック起動
-  // この動作でCSVファイルとしてダウンロードされる
-  a.click()
-
-  // リンク破棄
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+  try {
+    // クリック起動。この動作でCSVファイルとしてダウンロードされる
+    document.body.appendChild(a)
+    a.click()
+  } finally {
+    // 例外が起きても確実にリンク破棄と Object URL 解放を行う（メモリリーク防止）
+    // a.remove() は親が無くても例外を投げないため appendChild 失敗時も安全
+    a.remove()
+    URL.revokeObjectURL(url)
+  }
 }
 
 /**

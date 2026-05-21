@@ -47,4 +47,15 @@ describe('downloadCSV', () => {
     downloadCSV([{ a: 1 }], 'data.csv')
     expect(capturedDownload).toBe('data.csv')
   })
+
+  it('click が例外を投げても Object URL 解放とリンク破棄が行われる', () => {
+    // try/finally により、例外時も revokeObjectURL と <a> 除去が漏れないことを担保
+    // （漏れると Object URL と DOM 要素がリークする）
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
+      throw new Error('click失敗')
+    })
+    expect(() => downloadCSV([{ a: 1 }], 'test.csv')).toThrow('click失敗')
+    expect(URL.revokeObjectURL).toHaveBeenCalledOnce()
+    expect(document.querySelector('a')).toBeNull()
+  })
 })
