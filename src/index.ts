@@ -1,5 +1,7 @@
-export { parse, parseFile } from './parse.js'
-export { downloadCSV, stringify } from './stringify.js'
+// web-csv-ops 公開 API（コア）
+
+export { parse } from './core/parse.js'
+export { stringify } from './core/stringify.js'
 export type {
   CSVError,
   CSVErrorType,
@@ -7,4 +9,4 @@ export type {
   ParseOptions,
   Result,
   StringifyOptions,
-} from './types.js'
+} from './core/types.js'

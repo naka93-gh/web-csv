@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { downloadCSV } from '../src/stringify'
+import { downloadCSV } from '../../src/browser/download'
 
 describe('downloadCSV', () => {
   beforeEach(() => {

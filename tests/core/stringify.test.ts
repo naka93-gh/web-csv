@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { stringify } from '../src/stringify'
+import { stringify } from '../../src/core/stringify'
 
 describe('stringify', () => {
   // デフォルト挙動が Excel 互換（BOM + CRLF）であることを担保

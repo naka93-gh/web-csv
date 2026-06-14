@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { parseFile } from '../src/parse'
+import { parseFile } from '../../src/browser/parse-file'
 
 describe('parseFile', () => {
   afterEach(() => {

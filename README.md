@@ -54,10 +54,10 @@ const result = parse("1,2\n3,4", { headers: ["x", "y"] });
 
 ### parseFile
 
-`<input type="file">` で取得した `File` をそのまま渡せる。読み込み失敗も Result 型で返る。
+`<input type="file">` で取得した `File` をそのまま渡せる。読み込み失敗も Result 型で返る。ブラウザ専用 API なので `web-csv-ops/browser` から import する。
 
 ```ts
-import { parseFile } from "web-csv-ops";
+import { parseFile } from "web-csv-ops/browser";
 
 const handleChange = async (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
@@ -83,10 +83,10 @@ const csv = stringify([{ id: 1, name: "Alice" }], {
 
 ### downloadCSV
 
-シリアライズしてブラウザのダウンロードを起動する。
+シリアライズしてブラウザのダウンロードを起動する。`web-csv-ops/browser` から import する。
 
 ```ts
-import { downloadCSV } from "web-csv-ops";
+import { downloadCSV } from "web-csv-ops/browser";
 
 downloadCSV(users, "users.csv", { headers: ["id", "name", "email"] });
 ```

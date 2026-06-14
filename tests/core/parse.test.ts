@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parse } from '../src/parse'
+import { parse } from '../../src/core/parse'
 
 describe('parse', () => {
   // ヘッダーあり/データのみ/空入力など、典型的なCSVが正しくオブジェクト化されることを担保
