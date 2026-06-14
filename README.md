@@ -1,10 +1,10 @@
-# web-csv
+# web-csv-ops
 
-[![npm version](https://img.shields.io/npm/v/web-csv.svg)](https://www.npmjs.com/package/web-csv)
-[![bundle size](https://deno.bundlejs.com/badge?q=web-csv)](https://bundlejs.com/?q=web-csv)
-[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](https://www.npmjs.com/package/web-csv?activeTab=dependencies)
-[![types](https://img.shields.io/npm/types/web-csv.svg)](https://www.npmjs.com/package/web-csv)
-[![license](https://img.shields.io/npm/l/web-csv.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/web-csv-ops.svg)](https://www.npmjs.com/package/web-csv-ops)
+[![bundle size](https://deno.bundlejs.com/badge?q=web-csv-ops)](https://bundlejs.com/?q=web-csv-ops)
+[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](https://www.npmjs.com/package/web-csv-ops?activeTab=dependencies)
+[![types](https://img.shields.io/npm/types/web-csv-ops.svg)](https://www.npmjs.com/package/web-csv-ops)
+[![license](https://img.shields.io/npm/l/web-csv-ops.svg)](./LICENSE)
 
 ブラウザ・Node に対応した TypeScript 製の CSV parse/stringify ライブラリ。
 
@@ -18,9 +18,9 @@
 ## インストール
 
 ```bash
-npm install web-csv
-pnpm add web-csv
-bun add web-csv
+npm install web-csv-ops
+pnpm add web-csv-ops
+bun add web-csv-ops
 ```
 
 - ESM 専用
@@ -34,7 +34,7 @@ bun add web-csv
 CSV 文字列をオブジェクト配列にパースする。値は常に文字列で、数値・日付への自動変換はしない。
 
 ```ts
-import { parse } from "web-csv";
+import { parse } from "web-csv-ops";
 
 const result = parse("name,age\nAlice,30\nBob,25");
 if (result.ok) {
@@ -57,7 +57,7 @@ const result = parse("1,2\n3,4", { headers: ["x", "y"] });
 `<input type="file">` で取得した `File` をそのまま渡せる。読み込み失敗も Result 型で返る。
 
 ```ts
-import { parseFile } from "web-csv";
+import { parseFile } from "web-csv-ops";
 
 const handleChange = async (e: Event) => {
   const file = (e.target as HTMLInputElement).files?.[0];
@@ -72,7 +72,7 @@ const handleChange = async (e: Event) => {
 オブジェクト配列を CSV 文字列にする。既定で BOM 付き UTF-8・CRLF 改行（Excel 互換）。
 
 ```ts
-import { stringify } from "web-csv";
+import { stringify } from "web-csv-ops";
 
 const csv = stringify([{ id: 1, name: "Alice" }], {
   headers: ["id", "name"],
@@ -86,7 +86,7 @@ const csv = stringify([{ id: 1, name: "Alice" }], {
 シリアライズしてブラウザのダウンロードを起動する。
 
 ```ts
-import { downloadCSV } from "web-csv";
+import { downloadCSV } from "web-csv-ops";
 
 downloadCSV(users, "users.csv", { headers: ["id", "name", "email"] });
 ```

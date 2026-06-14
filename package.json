@@ -1,5 +1,5 @@
 {
-  "name": "web-csv",
+  "name": "web-csv-ops",
   "version": "0.1.0",
   "description": "Parse and stringify CSV in the browser or Node.js. Zero dependencies.",
   "repository": {

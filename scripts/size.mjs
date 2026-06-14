@@ -10,7 +10,7 @@ import { build } from 'esbuild'
 const LIMIT = 4 * 1024
 
 /** 計測対象エントリ（公開する import 単位） */
-const ENTRIES = [{ label: 'web-csv', entry: 'src/index.ts' }]
+const ENTRIES = [{ label: 'web-csv-ops', entry: 'src/index.ts' }]
 
 /** 1 エントリを本番と同じ設定でバンドルし min / gzip を返す */
 async function measure(entry) {
