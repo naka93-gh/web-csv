@@ -10,7 +10,7 @@ describe('parseFile', () => {
   it('File オブジェクトを読み込んでパースする', async () => {
     // <input type="file"> から取得した File を直接渡せることを担保
     const file = new File(['name,age\nAlice,30'], 'test.csv', { type: 'text/csv' })
-    const result = await parseFile<{ name: string; age: string }>(file)
+    const result = await parseFile(file)
     expect(result.ok).toBe(true)
     if (result.ok) expect(result.data).toEqual([{ name: 'Alice', age: '30' }])
   })
@@ -26,7 +26,7 @@ describe('parseFile', () => {
   it('parse のオプションを引き継ぐ (header: false)', async () => {
     // parseFile は parse のラッパー。オプションが透過的に渡ることを担保
     const file = new File(['1,2\n3,4'], 'test.csv', { type: 'text/csv' })
-    const result = await parseFile(file, { header: false, headers: ['a', 'b'] })
+    const result = await parseFile(file, { options: { header: false, headers: ['a', 'b'] } })
     expect(result.ok).toBe(true)
     if (result.ok)
       expect(result.data).toEqual([
@@ -42,7 +42,7 @@ describe('parseFile', () => {
     const result = await parseFile(file)
     expect(result.ok).toBe(false)
     if (!result.ok) {
-      expect(result.error.type).toBe('file-read')
+      expect(result.error.code).toBe('read-failed')
       expect(result.error.message).toBe('読込失敗')
     }
   })
@@ -54,7 +54,7 @@ describe('parseFile', () => {
     const result = await parseFile(file)
     expect(result.ok).toBe(false)
     if (!result.ok) {
-      expect(result.error.type).toBe('file-read')
+      expect(result.error.code).toBe('read-failed')
       expect(result.error.message).toBe('ファイル読込に失敗しました')
     }
   })

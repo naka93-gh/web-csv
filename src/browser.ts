@@ -3,9 +3,16 @@
 export { downloadCSV } from './browser/download.js'
 export { parseFile } from './browser/parse-file.js'
 export type {
-  CSVError,
-  ParsedRow,
+  Column,
+  ColumnType,
+  FileError,
+  FileErrorCode,
+  InferRow,
+  ParseArgs,
+  ParseArgsWithSchema,
   ParseOptions,
-  Result,
+  ParseResult,
+  RowError,
+  Schema,
   StringifyOptions,
 } from './core/types.js'

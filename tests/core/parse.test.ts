@@ -6,7 +6,7 @@ describe('parse', () => {
   describe('基本動作', () => {
     it('ヘッダー付きCSVをオブジェクト配列にパースする', () => {
       const text = 'name,age\nAlice,30\nBob,25'
-      const result = parse<{ name: string; age: string }>(text)
+      const result = parse(text)
       expect(result.ok).toBe(true)
       if (result.ok) {
         expect(result.data).toEqual([
@@ -32,6 +32,12 @@ describe('parse', () => {
       const result = parse('')
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toEqual([])
+    })
+
+    it('schema 無しでも errors は空配列で返る', () => {
+      const result = parse('a\n1')
+      expect(result.ok).toBe(true)
+      if (result.ok) expect(result.errors).toEqual([])
     })
   })
 
@@ -147,7 +153,7 @@ describe('parse', () => {
 
     it('skipEmptyLines: false では空行も保持する', () => {
       // 行番号を保ちたい用途（行単位で外部システムと突合など）のためのオプション
-      const result = parse('a,b\n1,2\n\n3,4', { skipEmptyLines: false })
+      const result = parse('a,b\n1,2\n\n3,4', { options: { skipEmptyLines: false } })
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data.length).toBe(3)
     })
@@ -155,13 +161,13 @@ describe('parse', () => {
     it('skipEmptyLines: false でも末尾改行(LF)は空行を生まない', () => {
       // 末尾改行はファイル終端の慣習でありデータ行ではない。
       // skipEmptyLines: false でも幻の空行を生まないことを担保
-      const result = parse('a,b\n1,2\n', { skipEmptyLines: false })
+      const result = parse('a,b\n1,2\n', { options: { skipEmptyLines: false } })
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toEqual([{ a: '1', b: '2' }])
     })
 
     it('skipEmptyLines: false でも末尾改行(CRLF)は空行を生まない', () => {
-      const result = parse('a,b\r\n1,2\r\n', { skipEmptyLines: false })
+      const result = parse('a,b\r\n1,2\r\n', { options: { skipEmptyLines: false } })
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toEqual([{ a: '1', b: '2' }])
     })
@@ -195,7 +201,7 @@ describe('parse', () => {
   // ヘッダー行がないCSV（センサーデータなど）への対応分岐を担保
   describe('header オプション', () => {
     it('header: false + headers指定で指定キーのオブジェクト配列', () => {
-      const result = parse('1,2\n3,4', { header: false, headers: ['a', 'b'] })
+      const result = parse('1,2\n3,4', { options: { header: false, headers: ['a', 'b'] } })
       expect(result.ok).toBe(true)
       if (result.ok)
         expect(result.data).toEqual([
@@ -206,7 +212,7 @@ describe('parse', () => {
 
     it('header: false で headers 未指定の場合は column0, column1... をキーとする', () => {
       // ヘッダーが完全に未知のCSV処理用のフォールバック挙動
-      const result = parse('1,2\n3,4', { header: false })
+      const result = parse('1,2\n3,4', { options: { header: false } })
       expect(result.ok).toBe(true)
       if (result.ok)
         expect(result.data).toEqual([
@@ -217,7 +223,7 @@ describe('parse', () => {
 
     it('header 未指定で headers を渡すと header:false 扱いになる', () => {
       // headers を渡した意図（そのキーを使いたい）を汲み、1行目をデータとして扱う
-      const result = parse('1,2\n3,4', { headers: ['a', 'b'] })
+      const result = parse('1,2\n3,4', { options: { headers: ['a', 'b'] } })
       expect(result.ok).toBe(true)
       if (result.ok)
         expect(result.data).toEqual([
@@ -228,7 +234,7 @@ describe('parse', () => {
 
     it('header: true を明示した場合は headers を無視する', () => {
       // 明示的な header:true は従来通り 1行目をヘッダーとし headers は無視
-      const result = parse('x,y\n1,2', { header: true, headers: ['a', 'b'] })
+      const result = parse('x,y\n1,2', { options: { header: true, headers: ['a', 'b'] } })
       expect(result.ok).toBe(true)
       if (result.ok) expect(result.data).toEqual([{ x: '1', y: '2' }])
     })
@@ -241,7 +247,7 @@ describe('parse', () => {
       const result = parse('name,age\n"Alice,30')
       expect(result.ok).toBe(false)
       if (!result.ok) {
-        expect(result.error.type).toBe('parse')
+        expect(result.error.code).toBe('malformed')
         expect(result.error.line).toBeDefined()
       }
     })
@@ -250,7 +256,7 @@ describe('parse', () => {
       // 例: "x"y のように引用符終端後にカンマ/改行以外が続く
       const result = parse('a,b\n"x"y,z')
       expect(result.ok).toBe(false)
-      if (!result.ok) expect(result.error.type).toBe('parse')
+      if (!result.ok) expect(result.error.code).toBe('malformed')
     })
 
     it('フィールド途中で引用符が現れると Result.error', () => {
@@ -258,7 +264,7 @@ describe('parse', () => {
       const result = parse('a,b\nab"c,d')
       expect(result.ok).toBe(false)
       if (!result.ok) {
-        expect(result.error.type).toBe('parse')
+        expect(result.error.code).toBe('malformed')
         expect(result.error.line).toBeDefined()
       }
     })
@@ -269,7 +275,7 @@ describe('parse', () => {
       const result = parse('"line1\rline2"\nc"d')
       expect(result.ok).toBe(false)
       if (!result.ok) {
-        expect(result.error.type).toBe('parse')
+        expect(result.error.code).toBe('malformed')
         expect(result.error.line).toBe(3)
       }
     })
@@ -280,7 +286,7 @@ describe('parse', () => {
       const result = parse('"line1\r\nline2"\nc"d')
       expect(result.ok).toBe(false)
       if (!result.ok) {
-        expect(result.error.type).toBe('parse')
+        expect(result.error.code).toBe('malformed')
         expect(result.error.line).toBe(3)
       }
     })

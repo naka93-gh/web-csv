@@ -3,10 +3,16 @@
 export { parse } from './core/parse.js'
 export { stringify } from './core/stringify.js'
 export type {
-  CSVError,
-  CSVErrorType,
-  ParsedRow,
+  Column,
+  ColumnType,
+  FileError,
+  FileErrorCode,
+  InferRow,
+  ParseArgs,
+  ParseArgsWithSchema,
   ParseOptions,
-  Result,
+  ParseResult,
+  RowError,
+  Schema,
   StringifyOptions,
 } from './core/types.js'

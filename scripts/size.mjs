@@ -6,8 +6,8 @@
 import { gzipSync } from 'node:zlib'
 import { build } from 'esbuild'
 
-/** 各エントリの gzip LIMIT（バイト）。core は軽量死守、browser は core+DOM を含むぶん緩め */
-const LIMITS = { 'web-csv-ops': 2 * 1024, 'web-csv-ops/browser': 4 * 1024 }
+/** 各エントリの gzip LIMIT（バイト）。core は schema 検証込みで死守、browser は core+DOM を含むぶん緩め */
+const LIMITS = { 'web-csv-ops': 3 * 1024, 'web-csv-ops/browser': 5 * 1024 }
 
 /** 計測対象エントリ（公開する import 単位＝サブパス） */
 const ENTRIES = [
